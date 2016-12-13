@@ -1,0 +1,40 @@
+#!/bin/bash
+if [ $# -eq 0 ]
+  then
+    echo "Usage: bak file [-e|--extension file-extension] [-f|--outfile new-file-name] [-v [editor]] "
+    exit 1
+fi
+
+IFILE=$1
+EXT=.bak
+OFILE=$1
+EDITFILE=0
+EDITOR=$BAK_EDITOR
+# idiomatic parameter and option handling in sh
+# http://superuser.com/a/186279/620845
+while test $# -gt 0
+do
+    case "$1" in
+        -e) EXT=$2;shift
+            ;;
+        --extension) EXT=$2;shift
+            ;;
+        -f) OFILE=$2;shift
+            ;;
+        --outfile) OFILE=$2;shift
+            ;;
+        -v) EDITFILE=1;shift
+            if ! [[$2==-*]];
+              then
+                EDITOR=$2
+            fi
+            ;;
+    esac
+    shift
+done
+cp $IFILE $OFILE$EXT
+#if [["$EDITFILE" -eq 1]];
+#  then
+    $EDITOR $IFILE
+#fi
+exit 0
